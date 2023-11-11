@@ -9,47 +9,56 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthJwtController extends Controller
-{  
+{
     public function register(Request $request)
     {
         $params = $request->all();
 
-        if(empty($params['name'])) return error(500100);
-        if(empty($params['password'])) return error(500101);
-        if(empty($params['email'])) return error(500102);
+        if (empty($params['name'])) {
+            return error(500100);
+        }
+        if (empty($params['password'])) {
+            return error(500101);
+        }
+        if (empty($params['email'])) {
+            return error(500102);
+        }
 
         $salt = salt(20);
         $credentials = [
-            'name'          => $params['name'],
-            'salt'          => $salt,
-            'password'      => Hash::make($params['password'] . $salt),
-            'email'         => $params['email'],
+            'name' => $params['name'],
+            'salt' => $salt,
+            'password' => Hash::make($params['password'].$salt),
+            'email' => $params['email'],
         ];
 
         $user = User::create($credentials);
 
-        if($user){
+        if ($user) {
             return success();
         }
+
         return error();
     }
-    
+
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
     {
         $params = $request->all();
 
-        if(empty($params['password'])) return error(500101);
-        if(empty($params['email'])) return error(500102);
-
+        if (empty($params['password'])) {
+            return error(500101);
+        }
+        if (empty($params['email'])) {
+            return error(500102);
+        }
 
         $count = User::query()
                 ->where('email', $params['email'])
@@ -70,16 +79,16 @@ class AuthJwtController extends Controller
 
         $token = auth('api')->login($user);
 
-        if($token){
+        if ($token) {
             return $this->responseWithToken($token);
         }
 
-        return response()->json(['error' => 'Unauthorized'],401);
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     /**
-    * 刷新token
-    */
+     * 刷新token
+     */
     public function refresh()
     {
         return $this->responseWithToken(JWTAuth::refresh());
@@ -107,19 +116,17 @@ class AuthJwtController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-
     /**
-    * 响应
-    */
+     * 响应
+     */
     private function responseWithToken($token)
     {
         $response = [
-            'access_token' => 'bearer ' . $token,
+            'access_token' => 'bearer '.$token,
             'token_type' => 'Bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ];
 
         return response()->json($response);
     }
-
 }

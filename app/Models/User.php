@@ -9,11 +9,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements  JWTSubject
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'v1_users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,7 +47,6 @@ class User extends Authenticatable implements  JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -54,7 +54,7 @@ class User extends Authenticatable implements  JWTSubject
      */
     public function getJWTIdentifier()
     {
-        return $this->getKey();//默认取的是主键id：$this->id
+        return $this->getKey(); //默认取的是主键id：$this->id
     }
 
     /**
@@ -65,7 +65,6 @@ class User extends Authenticatable implements  JWTSubject
     public function getJWTCustomClaims()
     {
         //一些附加信息，不要太敏感，因为这些信息是可以从token里解析出来的，即使不知道签名
-        return ['name'=>$this->name, 'email'=>$this->email];
+        return ['name' => $this->name, 'email' => $this->email];
     }
-    
 }
