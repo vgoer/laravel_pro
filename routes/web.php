@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return 'api is working';
 });
 
-Route::get('/list', function () {
-    return success(['ys' => '111'], 200);
-});
+
