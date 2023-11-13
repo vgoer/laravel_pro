@@ -73,3 +73,49 @@ function salt($len = 4)
 
     return $str;
 }
+
+/**
+ * 电话号码
+ *
+ * @param [type] $phone
+ * @return void
+ */
+function validate_phone_number($phone) {
+    // 去除字符串中的空格和特殊字符
+    $cleaned_phone = preg_replace('/[^0-9]/', '', $phone);
+
+    // 验证手机号码是否为11位数字
+    if (strlen($cleaned_phone) !== 11) {
+        return false;
+    }
+
+    // 验证手机号码是否符合中国的号码规则
+    $pattern = '/^(?:\+?86)?1(?:3\d{3}|4[5-9]\d{2}|5\d{3}|6[2389]\d{2}|7[0-8]\d{2}|8\d{3}|9[189]\d{2})\d{6}$/';
+    if (!preg_match($pattern, $cleaned_phone)) {
+        return false;
+    }
+
+    // 手机号码验证通过
+    return true;
+}
+
+/**
+ * 验证ip
+ *
+ * @param [type] $ip
+ * @return void
+ */
+function validate_ip_address($ip) {
+    // 验证IPv4地址
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        return true;
+    }
+
+    // 验证IPv6地址
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        return true;
+    }
+
+    // IP地址格式不正确
+    return false;
+}
